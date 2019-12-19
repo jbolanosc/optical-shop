@@ -1,9 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import firebase from "../Firebase/Firebase";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
+
+import firebase from "../Firebase/Firebase";
 
 import Loading from "../layout/Loader";
 import { InputField, ErrorField } from "../fields/inputField";
@@ -60,10 +61,10 @@ const generateToast = (err, msg) => {
   }
 };
 
-const EditPatient = props => {
+const EditDoctor = props => {
   const [isLoading, setIsLoading] = useState(1);
   const [key, setkey] = useState("");
-  const [patient, setPatient] = useState({
+  const [doctor, setDoctor] = useState({
     firstname: "",
     lastname: "",
     IdNumber: "",
@@ -71,11 +72,11 @@ const EditPatient = props => {
     phone: ""
   });
 
-  const savePatient = () => {
-    const { firstname, lastname, IdNumber, phone, email } = patient;
+  const saveDoctor = () => {
+    const { firstname, lastname, IdNumber, phone, email } = doctor;
     const updateRef = firebase
       .firestore()
-      .collection("patients")
+      .collection("doctors")
       .doc(key);
 
     updateRef
@@ -87,42 +88,42 @@ const EditPatient = props => {
         email
       })
       .then(docRef => {
-        generateToast(false, "Patient updated.");
-        props.history.push("/patients");
+        generateToast(false, "Doctor updated.");
+        props.history.push("/doctors");
       })
       .catch(error => {
-        generateToast(true, "Error updating document: ", error);
+        generateToast(true, "Error updating doctor: ", error);
       });
   };
 
   const handleChange = name => event => {
-    setPatient({ ...patient, [name]: event.target.value });
+    setDoctor({ ...doctor, [name]: event.target.value });
   };
 
   useEffect(() => {
-    const loadPatient = () => {
+    const loadDoctor = () => {
       const ref = firebase
         .firestore()
-        .collection("patients")
+        .collection("doctors")
         .doc(props.match.params.id);
       ref.get().then(doc => {
         if (doc.exists) {
           const data = doc.data();
           setkey(props.match.params.id);
-          setPatient(data);
+          setDoctor(data);
         } else {
-          generateToast(true, "No document with given ID.");
-          props.history.push("/patients");
+          generateToast(true, "No doctor found");
+          props.history.push("/doctors");
         }
       });
     };
+
     const loading = () => {
       setTimeout(() => {
         setIsLoading(0);
       }, 1200);
     };
-
-    loadPatient();
+    loadDoctor();
     loading();
   }, [props.history, props.match.params.id]);
 
@@ -134,18 +135,18 @@ const EditPatient = props => {
         </div>
       ) : (
         <Fragment>
-          <h2 className="m-1">Edit Patient</h2>
+          <h2 className="m-1">Edit Doctor</h2>
           <Formik
             onSubmit={data => {
-              savePatient();
+              saveDoctor();
             }}
             validationSchema={SignupSchema}
             initialValues={{
-              firstname: patient.firstname,
-              lastname: patient.lastname,
-              IdNumber: patient.IdNumber,
-              email: patient.email,
-              phone: patient.phone
+              firstname: doctor.firstname,
+              lastname: doctor.lastname,
+              IdNumber: doctor.IdNumber,
+              email: doctor.email,
+              phone: doctor.phone
             }}
           >
             {({ touched, errors }) => (
@@ -154,7 +155,7 @@ const EditPatient = props => {
                   name="firstname"
                   placeholder="Firstname"
                   component={InputField}
-                  value={patient.firstname}
+                  value={doctor.firstname}
                   onChange={handleChange("firstname")}
                 />
                 {errors.firstname && touched.firstname ? (
@@ -168,7 +169,7 @@ const EditPatient = props => {
                   name="lastname"
                   placeholder="Lastname"
                   component={InputField}
-                  value={patient.lastname}
+                  value={doctor.lastname}
                   onChange={handleChange("lastname")}
                 />
                 {errors.lastname && touched.lastname ? (
@@ -182,7 +183,7 @@ const EditPatient = props => {
                   name="IdNumber"
                   placeholder="ID number"
                   component={InputField}
-                  value={patient.IdNumber}
+                  value={doctor.IdNumber}
                   onChange={handleChange("IdNumber")}
                 />
                 {errors.IdNumber && touched.IdNumber ? (
@@ -196,7 +197,7 @@ const EditPatient = props => {
                   name="email"
                   placeholder="Email"
                   component={InputField}
-                  value={patient.email}
+                  value={doctor.email}
                   onChange={handleChange("email")}
                 />
                 {errors.email && touched.email ? (
@@ -212,7 +213,7 @@ const EditPatient = props => {
                   step="1"
                   placeholder="Phone"
                   component={InputField}
-                  value={patient.phone}
+                  value={doctor.phone}
                   onChange={handleChange("phone")}
                 />
                 {errors.phone && touched.phone ? (
@@ -234,4 +235,4 @@ const EditPatient = props => {
   );
 };
 
-export default EditPatient;
+export default EditDoctor;

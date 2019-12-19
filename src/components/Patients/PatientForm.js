@@ -2,6 +2,8 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import firebase from "../Firebase/Firebase";
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 import { InputField, ErrorField } from "../fields/inputField";
 
 const SignupSchema = Yup.object().shape({
@@ -26,10 +28,38 @@ const SignupSchema = Yup.object().shape({
     .integer("Only numbers are allowed")
 });
 
-const ref = firebase.firestore().collection("patients");
+const generateToast = (err, msg) => {
+  const red =
+    "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(215,14,14,1) 99%, rgba(0,212,255,1) 100%)";
+  const green =
+    "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(0,212,255,1) 0%, rgba(139,213,86,1) 0%)";
+  if (err) {
+    Toastify({
+      text: msg,
+      duration: 5000,
+      close: true,
+      gravity: "top", // `top` or `bottom`
+      position: "center", // `left`, `center` or `right`
+      backgroundColor: red,
+      className: "info",
+      stopOnFocus: true // Prevents dismissing of toast on hover
+    }).showToast();
+  } else {
+    Toastify({
+      text: msg,
+      duration: 5000,
+      close: true,
+      gravity: "bottom", // `top` or `bottom`
+      position: "center", // `left`, `center` or `right`
+      backgroundColor: green,
+      className: "info",
+      stopOnFocus: true // Prevents dismissing of toast on hover
+    }).showToast();
+  }
+};
 
-const PatientForm = () => {
-
+const PatientForm = props => {
+  const ref = firebase.firestore().collection("patients");
   const savePatient = data => {
     const { firstname, lastname, IdNumber, phone, email } = data;
 
@@ -42,10 +72,11 @@ const PatientForm = () => {
         email
       })
       .then(docRef => {
-        alert("Patient saved...");
+        generateToast(false, "Patient saved.");
+        props.history.push("/patients");
       })
       .catch(error => {
-        console.error("Error adding document: ", error);
+        generateToast(true, "Error adding document: ", error);
       });
   };
 
@@ -112,7 +143,13 @@ const PatientForm = () => {
                 component={ErrorField}
               />
             ) : null}
-            <Field name="phone" type="number" step="1" placeholder="Phone" component={InputField} />
+            <Field
+              name="phone"
+              type="number"
+              step="1"
+              placeholder="Phone"
+              component={InputField}
+            />
             {errors.phone && touched.phone ? (
               <ErrorMessage
                 errors={errors.phone}

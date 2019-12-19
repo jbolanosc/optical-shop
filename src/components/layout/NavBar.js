@@ -20,9 +20,11 @@ const styles = {
 const NavBar = () => (
   <nav className="navbar navbar-dark" style={styles.nav}>
     <IconContext.Provider value={{ size: "3em" }}>
-      <span style={styles.brand}>
-        3.14 <br /> <FaEye />
-      </span>
+      <Link style={styles.brand} to="/">
+        <span>
+          3.14 <br /> <FaEye />
+        </span>
+      </Link>
       <Link to="/patients">
         <MdAccessibility />
       </Link>

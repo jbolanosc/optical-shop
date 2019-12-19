@@ -9,12 +9,12 @@ function App() {
     <Router>
       <Switch>
         <Fragment>
-          <div className="container-fluid">
+          <div className="container-fluid w-100">
             <div className="row">
-              <div className="col-md-1 bg-dark">
+              <div className="col-md-1 bg-dark p-0">
                 <NavBar />
               </div>
-              <div className="col-md-11">
+              <div className="col-md-11 p-0">
                 <MainContainer />
               </div>
             </div>

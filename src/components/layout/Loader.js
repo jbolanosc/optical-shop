@@ -1,19 +1,6 @@
-import React, { styleSheet } from "react";
+import React from "react";
 import { BounceyLoader } from "react-loaders-spinners";
 
-const styles = {
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#ddd",
-    height: "300px"
-  },
-  loader: {
-    margin: "auto",
-    textAlign: "center"
-  }
-};
 
 const Loading = () => (
   <div
@@ -24,7 +11,7 @@ const Loading = () => (
       transform: "translate(-50%, -50%)"
     }}
   >
-    <BounceyLoader style={styles.loader} width={35} height={35} />
+    <BounceyLoader loading="true" width={35} height={35} />
   </div>
 );
 
